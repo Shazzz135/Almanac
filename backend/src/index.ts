@@ -1,20 +1,68 @@
-import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import dotenv from 'dotenv';
+import connectDB from './configuration/db';
+import routes from './routes';
+import { notFound, errorHandler } from './middleware/errorMiddleware';
 
+// load environment variables
+dotenv.config();
+
+// create express app
 const app = express();
-const PORT = process.env.BACKEND_PORT || 3000;
+const port = process.env.BACKEND_PORT || 5000;
 
-// Middleware
-app.use(cors());
+// connect to mongodb
+connectDB();
+
+// cors configiuration
+const isProduction = process.env.NODE_ENV === 'production';
+const corsOptions = {
+  // in development, allow all localhost and 127.0.0.1 requests
+  // in production, this would be replaced with specific allowed origins
+  origin: isProduction 
+    ? process.env.ALLOWED_ORIGINS?.split(',') || [] 
+    : (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+      // allow requests with no origin (like mobile apps, curl, postman)
+      if (!origin) return callback(null, true);
+      
+      // allow all localhost and 127.0.0.1 requests in development
+      if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+        return callback(null, true);
+      }
+      
+      callback(new Error('Not allowed by CORS'));
+    },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+// middleware
+app.use(cors(corsOptions));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Routes
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Backend is running' });
+// debug middleware to log all requests
+app.use((req, _res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+// routes
+app.use('/api', routes);
+
+// simple test route at root
+app.get('/', (_req, res) => {
+  res.json({ message: 'server is running' });
 });
+
+// error middleware
+app.use(notFound);
+app.use(errorHandler);
+
+// start server
+app.listen(port, () => {
+  console.log(`server running on port ${port} (http://localhost:${port})`);
+  console.log(`CORS enabled for: ${isProduction ? process.env.ALLOWED_ORIGINS || 'specific origins' : 'all localhost origins'}`);
+}); 
