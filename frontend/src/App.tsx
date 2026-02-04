@@ -8,7 +8,7 @@ import { AuthProvider } from './provider/AuthProvider'
 function App() {
   return (
     <>
-      <div className="justify-center items-center flex h-screen w-screen"> 
+      <div className="justify-center items-center flex h-screen w-screen bg-gradient-to-t from-gray-900 to-gray-950"> 
         <AuthProvider>
           <Router>
             <Routes>
