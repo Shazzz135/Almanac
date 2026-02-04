@@ -1,0 +1,20 @@
+{
+  "name": "almanac",
+  "version": "1.0.0",
+  "description": "Almanac - Full Stack Application",
+  "private": true,
+  "type": "module",
+  "pnpm": {
+    "overrides": {
+      "typescript": "~5.9.3"
+    }
+  },
+  "scripts": {
+    "dev": "pnpm --parallel -r run dev",
+    "build": "pnpm -r run build",
+    "lint": "pnpm -r run lint"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
