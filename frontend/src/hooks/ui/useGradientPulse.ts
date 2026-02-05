@@ -26,11 +26,11 @@ export const useGradientPulse = () => {
                 .gradient-pulse {
                     background: linear-gradient(
                         135deg,
-                        #3b82f6,
-                        #2563eb,
-                        #1d4ed8,
-                        #1e40af,
-                        #3b82f6
+                        #b9d3fd,
+                        #6f9af6,
+                        #2f5ddc,
+                        #153bb8,
+                        #012f78
                     );
                     background-size: 200% 200%;
                     -webkit-background-clip: text;
