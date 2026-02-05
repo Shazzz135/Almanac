@@ -5,7 +5,7 @@ import { Request, Response } from 'express';
  * @route GET /api/status
  * @access Public
  */
-export const getSystemStatus = (req: Request, res: Response) => {
+export const getSystemStatus = (_req: Request, res: Response) => {
     const nodeVersion = process.version;
     const expressVersion = require('express/package.json').version;
 

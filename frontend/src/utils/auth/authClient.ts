@@ -13,6 +13,7 @@ import { getAccessToken } from './tokenstorage';
 /**
  * Makes an authenticated HTTP request to the API
  * Automatically adds Authorization header with JWT token if available
+ * Falls back to reset token for password reset flow
  * 
  * @param endpoint - API endpoint path (e.g., '/auth/login')
  * @param options - Standard fetch options (method, body, headers, etc.)
@@ -28,7 +29,12 @@ export const authenticatedFetch = async (
     endpoint: string,
     options: RequestInit = {}
 ): Promise<Response> => {
-    const token = getAccessToken();
+    let token = getAccessToken();
+    
+    // For password reset flow, use reset token if available
+    if (!token && endpoint === '/auth/reset-password') {
+        token = sessionStorage.getItem('resetToken') || '';
+    }
 
     // Start with default headers and merge with any provided headers
     let headers: HeadersInit = {

@@ -3,7 +3,7 @@ import User from '../../models/user';
 import { ApiResponseUtil } from '../../utils/apiResponse';
 import { ValidationError } from '../../errors';
 import CodeGenerator from '../../utils/codeGenerator';
-import { EmailService } from '../../email/email';
+import EmailService from '../../email/email';
 
 /**
  * @route   POST /api/auth/resend-verification
@@ -39,7 +39,15 @@ export const resendVerification = async (req: Request, res: Response, next: Next
       console.log(`[RESEND-VERIFICATION] Code sent to ${user.email}`);
     } catch (emailError) {
       console.error('[RESEND-VERIFICATION] Failed to send email:', emailError);
-      throw new Error('Failed to send verification email');
+      
+      // Clear the code if email fails
+      user.emailVerificationCode = undefined;
+      user.emailVerificationCodeExpiry = undefined;
+      await user.save();
+      
+      // Return more specific error message
+      const errorMsg = emailError instanceof Error ? emailError.message : 'Failed to send verification email';
+      throw new ValidationError(`Email service error: ${errorMsg}. Please try again later or contact support.`);
     }
 
     ApiResponseUtil.success(res, { email: user.email }, 'Verification code sent to your email');

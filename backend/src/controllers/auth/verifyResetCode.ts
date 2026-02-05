@@ -37,11 +37,11 @@ export const verifyResetCode = async (req: Request, res: Response, next: NextFun
     }
 
     // Generate reset token (valid for 15 minutes for password reset)
-    const resetToken = JWTUtils.generateAccessToken({
-      userId: user._id.toString(),
-      email: user.email,
-      role: user.role
-    });
+    const resetToken = JWTUtils.generateAccessToken(
+      user._id.toString(),
+      user.email,
+      user.role
+    );
 
     ApiResponseUtil.success(res, { resetToken }, 'Code verified successfully');
   } catch (error) {

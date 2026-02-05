@@ -34,11 +34,11 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
     }
 
     // Generate new access token with current user role
-    const newAccessToken = JWTUtils.generateAccessToken({
-      userId: String(user._id),
-      email: user.email,
-      role: user.role
-    });
+    const newAccessToken = JWTUtils.generateAccessToken(
+      String(user._id),
+      user.email,
+      user.role
+    );
 
     res.json({
       success: true,
@@ -83,11 +83,11 @@ export const refreshToken = async (req: Request, res: Response, next: NextFuncti
     }
 
     // Generate new access token with current user role
-    const newAccessToken = JWTUtils.generateAccessToken({
-      userId: String(user._id),
-      email: user.email,
-      role: user.role
-    });
+    const newAccessToken = JWTUtils.generateAccessToken(
+      String(user._id),
+      user.email,
+      user.role
+    );
 
     res.json({
       success: true,
