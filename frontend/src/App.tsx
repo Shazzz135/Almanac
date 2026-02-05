@@ -4,7 +4,9 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 //Page Imports
 import Landing from "./pages/Landing"
 import Auth from "./pages/Auth"
-import Bench from "./pages/Bench"
+import Board from "./pages/Board"
+
+//Provider Imports
 import { AuthProvider } from './provider/AuthProvider'
 import Navbar from './components/ui/Navbar'
 
@@ -22,8 +24,8 @@ function App() {
               {/* Auth Routes - all subroutes defined in Auth component */}
               <Route path="/auth/*" element={<Auth />} />
 
-              {/* Bench page - shown after login */}
-              <Route path="/bench" element={<Bench />} />
+              {/* Board page - shown after login */}
+              <Route path="/board" element={<Board />} />
 
               {/* Catch-all - must be last */}
               <Route path="*" element={<Navigate to="/" replace />} />
