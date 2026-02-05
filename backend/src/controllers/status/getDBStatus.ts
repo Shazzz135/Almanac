@@ -6,7 +6,7 @@ import mongoose from 'mongoose';
  * @route GET /api/status/db
  * @access Public
  */
-export const getDbStatus = async (req: Request, res: Response) => {
+export const getDbStatus = async (_req: Request, res: Response) => {
     try {
         // check if mongoose is connected
         if (mongoose.connection.readyState !== 1) {

@@ -24,7 +24,7 @@ import type {
   ResetPasswordResponse,
   VerifyPasswordResetCodeRequest,
   VerifyPasswordResetCodeResponse,
-} from '../types/authTypes';
+} from '../../types/auth/authTypes';
 
 // Re-export types and utilities for backward compatibility
 export type {
@@ -36,8 +36,38 @@ export type {
   RefreshResponse,
   ErrorResponse,
 };
-export { UserRole } from '../types/authTypes';
+export { UserRole } from '../../types/auth/authTypes';
 export { setTokens, getAccessToken, getRefreshToken, clearTokens, hasValidToken };
+
+// ============================================================================
+// ERROR HANDLING UTILITY
+// ============================================================================
+
+/**
+ * Extract specific error message from API response
+ * Handles various error response structures from backend
+ * @param errorResponse - Error response object from API
+ * @returns User-friendly error message
+ */
+const extractErrorMessage = (errorResponse: any): string => {
+  // Handle error.message structure (primary backend format)
+  if (errorResponse?.error?.message) {
+    return errorResponse.error.message;
+  }
+  
+  // Handle direct error string
+  if (typeof errorResponse?.error === 'string') {
+    return errorResponse.error;
+  }
+  
+  // Handle message field at root level
+  if (typeof errorResponse?.message === 'string') {
+    return errorResponse.message;
+  }
+  
+  // Default fallback
+  return 'An error occurred. Please try again.';
+};
 
 // ============================================================================
 // API FUNCTIONS
@@ -56,8 +86,8 @@ export const register = async (data: RegisterRequest): Promise<AuthResponse> => 
 
   if (!response.ok) {
     try {
-      const errorResponse: ErrorResponse = await response.json();
-      throw new Error(typeof errorResponse.error === 'string' ? errorResponse.error : 'Registration failed');
+      const errorResponse = await response.json();
+      throw new Error(extractErrorMessage(errorResponse));
     } catch (parseError) {
       if (parseError instanceof Error) {
         throw parseError;
@@ -85,8 +115,8 @@ export const login = async (data: LoginRequest): Promise<AuthResponse> => {
 
   if (!response.ok) {
     try {
-      const errorResponse: ErrorResponse = await response.json();
-      throw new Error(typeof errorResponse.error === 'string' ? errorResponse.error : 'Login failed');
+      const errorResponse = await response.json();
+      throw new Error(extractErrorMessage(errorResponse));
     } catch (parseError) {
       if (parseError instanceof Error) {
         throw parseError;
@@ -112,8 +142,8 @@ export const getCurrentUser = async (): Promise<User> => {
 
   if (!response.ok) {
     try {
-      const errorResponse: ErrorResponse = await response.json();
-      throw new Error(typeof errorResponse.error === 'string' ? errorResponse.error : 'Failed to get user info');
+      const errorResponse = await response.json();
+      throw new Error(extractErrorMessage(errorResponse));
     } catch (parseError) {
       if (parseError instanceof Error) {
         throw parseError;
@@ -188,8 +218,8 @@ export const resetPassword = async (data: ResetPasswordRequest): Promise<ResetPa
 
   if (!response.ok) {
     try {
-      const errorResponse: ErrorResponse = await response.json();
-      throw new Error(typeof errorResponse.error === 'string' ? errorResponse.error : 'Failed to reset password');
+      const errorResponse = await response.json();
+      throw new Error(extractErrorMessage(errorResponse));
     } catch (parseError) {
       if (parseError instanceof Error) {
         throw parseError;
@@ -208,20 +238,20 @@ export const resetPassword = async (data: ResetPasswordRequest): Promise<ResetPa
  * @returns Promise with user data
  */
 export const verifyPasswordResetCode = async (data: VerifyPasswordResetCodeRequest): Promise<VerifyPasswordResetCodeResponse> => {
-  const response = await authenticatedFetch('/auth/verify-password-reset-code', {
+  const response = await authenticatedFetch('/auth/reset-password', {
     method: 'POST',
     body: JSON.stringify(data),
   });
 
   if (!response.ok) {
     try {
-      const errorResponse: ErrorResponse = await response.json();
-      throw new Error(typeof errorResponse.error === 'string' ? errorResponse.error : 'Invalid verification code');
+      const errorResponse = await response.json();
+      throw new Error(extractErrorMessage(errorResponse));
     } catch (parseError) {
       if (parseError instanceof Error) {
         throw parseError;
       }
-      throw new Error('Invalid verification code');
+      throw new Error('Failed to reset password');
     }
   }
 
@@ -242,8 +272,8 @@ export const forgotPassword = async (data: { email: string }): Promise<{ success
 
   if (!response.ok) {
     try {
-      const errorResponse: ErrorResponse = await response.json();
-      throw new Error(typeof errorResponse.error === 'string' ? errorResponse.error : 'Failed to send reset code');
+      const errorResponse = await response.json();
+      throw new Error(extractErrorMessage(errorResponse));
     } catch (parseError) {
       if (parseError instanceof Error) {
         throw parseError;
@@ -268,8 +298,8 @@ export const verifyResetCode = async (data: { email: string; code: string }): Pr
 
   if (!response.ok) {
     try {
-      const errorResponse: ErrorResponse = await response.json();
-      throw new Error(typeof errorResponse.error === 'string' ? errorResponse.error : 'Failed to verify code');
+      const errorResponse = await response.json();
+      throw new Error(extractErrorMessage(errorResponse));
     } catch (parseError) {
       if (parseError instanceof Error) {
         throw parseError;
@@ -279,6 +309,33 @@ export const verifyResetCode = async (data: { email: string; code: string }): Pr
   }
 
   return await response.json();
+};
+
+/**
+ * Verify email with verification code (signup flow)
+ * @param data - Email and 6-digit verification code
+ * @returns Promise with success message
+ */
+export const verifyEmail = async (data: { email: string; code: string }): Promise<{ success: boolean; message: string }> => {
+  const response = await authenticatedFetch('/auth/verify-email', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    try {
+      const errorResponse = await response.json();
+      throw new Error(extractErrorMessage(errorResponse));
+    } catch (parseError) {
+      if (parseError instanceof Error) {
+        throw parseError;
+      }
+      throw new Error('Failed to verify email');
+    }
+  }
+
+  const result = await response.json();
+  return result;
 };
 
 /**
@@ -294,6 +351,7 @@ const authApi = {
   verifyPasswordResetCode,
   forgotPassword,
   verifyResetCode,
+  verifyEmail,
 };
 
 export default authApi;

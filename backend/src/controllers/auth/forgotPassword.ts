@@ -3,7 +3,7 @@ import User from '../../models/user';
 import { ApiResponseUtil } from '../../utils/apiResponse';
 import { ValidationError } from '../../errors';
 import CodeGenerator from '../../utils/codeGenerator';
-import { EmailService } from '../../email/email';
+import EmailService from '../../email/email';
 
 /**
  * @route   POST /api/auth/forgot-password
@@ -38,10 +38,15 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
       console.log(`[FORGOT-PASSWORD] Reset code sent to ${user.email}`);
     } catch (emailError) {
       console.error('[FORGOT-PASSWORD] Failed to send email:', emailError);
+      
+      // Clear the code if email fails
       user.twoFactorCode = undefined;
       user.twoFactorCodeExpiry = undefined;
       await user.save();
-      throw new Error('Failed to send reset code email');
+      
+      // Return more specific error message
+      const errorMsg = emailError instanceof Error ? emailError.message : 'Failed to send reset code email';
+      throw new ValidationError(`Email service error: ${errorMsg}. Please try again later or contact support.`);
     }
 
     ApiResponseUtil.success(res, { email: user.email }, 'Reset code sent to your email');

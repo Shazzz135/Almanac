@@ -1,4 +1,5 @@
 // Auth Controllers - Barrel Export
+export { register } from './register';
 export { login } from './login';
 export { refresh, refreshToken } from './refreshToken';
 export { logout } from './logout';

@@ -2,7 +2,9 @@ import mongoose from 'mongoose';
 import { Router } from 'express';
 
 // importing routes
+import authRoutes from './authRoutes';
 import userRoutes from './userRoutes';
+import statusRoutes from './statusRoutes';
 
 const router = Router();
 
@@ -120,6 +122,8 @@ router.get('/test', (_req, res) => {
 });
 
 // mounting routes
+router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
+router.use('/status', statusRoutes);
 
 export default router;

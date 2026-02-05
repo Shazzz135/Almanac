@@ -60,10 +60,20 @@ export interface ErrorResponse {
 
 export interface ResetPasswordRequest {
   email: string;
+  newPassword: string;
+  confirmPassword: string;
 }
 
 export interface ResetPasswordResponse {
   message: string;
+  data?: {
+    user: {
+      id: string;
+      name: string;
+      email: string;
+      role: UserRoleType;
+    };
+  };
 }
 
 export interface VerifyPasswordResetCodeRequest {
