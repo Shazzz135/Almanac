@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormValidation } from "../../hooks/auth/useFormValidation";
-import { login } from "../../services/auth/authApi";
+import { useAuth } from "../../hooks/auth/useAuth";
 
 export default function Login() {
 	const navigate = useNavigate();
+	const { login } = useAuth();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [loading, setLoading] = useState(false);
@@ -31,7 +32,7 @@ export default function Login() {
 
 		setLoading(true);
 		try {
-			await login({ email: email.toLowerCase(), password });
+			await login(email.toLowerCase(), password);
 			navigate("/bench");
 		} catch (error) {
 			const errorMessage = error instanceof Error ? error.message : "Login failed";
