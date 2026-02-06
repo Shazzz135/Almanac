@@ -15,6 +15,12 @@
     "lint": "pnpm -r run lint"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7"
+  },
+  "lint-staged": {
+    "frontend/**/*.{js,jsx,ts,tsx}": ["eslint --fix", "prettier --write"],
+    "backend/**/*.js": ["eslint --fix", "prettier --write"]
   }
 }
