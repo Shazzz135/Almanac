@@ -5,6 +5,7 @@ import { Router } from 'express';
 import authRoutes from './authRoutes';
 import userRoutes from './userRoutes';
 import statusRoutes from './statusRoutes';
+import calendarRoutes from './calendarRoutes';
 
 const router = Router();
 
