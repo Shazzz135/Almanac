@@ -88,6 +88,8 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
           name: user.name,
           email: user.email,
           role: user.role,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
           lastLogin: user.lastLogin
         },
         accessToken,

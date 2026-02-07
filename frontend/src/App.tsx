@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Landing from "./pages/Landing"
 import Auth from "./pages/Auth"
 import Board from "./pages/Board"
+import Profile from "./pages/Profile"
 
 //Provider Imports
 import { AuthProvider } from './provider/AuthProvider'
@@ -26,6 +27,9 @@ function App() {
 
               {/* Board page - shown after login */}
               <Route path="/board" element={<Board />} />
+
+              {/* Profile page - shows user account details */}
+              <Route path="/profile" element={<Profile />} />
 
               {/* Catch-all - must be last */}
               <Route path="*" element={<Navigate to="/" replace />} />

@@ -103,6 +103,8 @@ router.get('/me', authenticate, (_req, res) => {
 				name: user?.name,
 				email: user?.email,
 				role: user?.role,
+				createdAt: user?.createdAt,
+				updatedAt: user?.updatedAt,
 				isEmailVerified: user?.isEmailVerified,
 				lastLogin: user?.lastLogin
 			}

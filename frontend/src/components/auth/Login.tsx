@@ -9,6 +9,7 @@ export default function Login() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [loading, setLoading] = useState(false);
+	const [success, setSuccess] = useState(false);
 	const { validationError, setValidationError, clearError, isEmailValid } = useFormValidation();
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -33,7 +34,10 @@ export default function Login() {
 		setLoading(true);
 		try {
 			await login(email.toLowerCase(), password);
-			navigate("/bench");
+			setSuccess(true);
+			setTimeout(() => {
+				navigate("/board");
+			}, 1000);
 		} catch (error) {
 			const errorMessage = error instanceof Error ? error.message : "Login failed";
 			setValidationError(errorMessage);
@@ -54,6 +58,13 @@ export default function Login() {
 				{validationError && (
 					<div className="w-full bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-xs sm:text-sm mb-6 animate-pulse">
 						{validationError}
+					</div>
+				)}
+
+				{/* Success message */}
+				{success && (
+					<div className="w-full bg-green-50 border border-green-400 text-green-700 px-4 py-3 rounded-lg text-xs sm:text-sm mb-6 animate-pulse">
+						Login successful! Redirecting...
 					</div>
 				)}
 
