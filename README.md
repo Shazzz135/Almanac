@@ -26,4 +26,4 @@ owner.\
 
 **Diagram:**
 
-![Database Diagram](https://imgur.com/15MjwNq.jpeg)
+![Database Diagram](https://imgur.com/PZFRppW.jpeg)

@@ -122,8 +122,13 @@ router.get('/test', (_req, res) => {
 });
 
 // mounting routes
+
+
+import memberRoutes from './memberRoutes';
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
 router.use('/status', statusRoutes);
+router.use('/calendars', calendarRoutes);
+router.use('/members', memberRoutes);
 
 export default router;
