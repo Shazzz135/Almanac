@@ -15,6 +15,16 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+
 button:hover {
   cursor: pointer;
+}
+
+/* Hide scroll bar for main app */
+body, html {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+body::-webkit-scrollbar, html::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
