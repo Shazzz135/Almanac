@@ -18,7 +18,7 @@ function App() {
       <AuthProvider>
         <Router>
           <Navbar />
-          <div className="flex-1 flex flex-col items-center justify-center pt-16">
+          <div className="flex-1 flex flex-col items-center justify-center pt-16 pb-6">
             <Routes>
               {/* Main Pages */}
               <Route path="/" element={<Landing />} />

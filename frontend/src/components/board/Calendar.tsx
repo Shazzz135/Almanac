@@ -1,50 +1,69 @@
-import { generateCalendarDays } from '../../utils/getCalendarData';
+import { useEffect, useState } from 'react';
+import { generateCalendarDays } from '../../utils/board/getCalendarData';
+import { useGradientPulse } from '../../hooks/ui/useGradientPulse';
+import { getUserCalendar } from '../../services/board/calendar';
+import type { Calendar as CalendarType } from '../../services/board/calendar';
 
-export default function Calendar() {
+interface CalendarProps {
+    displayMonth: number;
+    displayYear: number;
+}
+
+export default function Calendar({ displayMonth, displayYear }: CalendarProps) {
+    const pulseClass = useGradientPulse();
+    const [calendar, setCalendar] = useState<CalendarType | null>(null);
+    const [loading, setLoading] = useState(true);
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth();
     const currentYear = currentDate.getFullYear();
     const currentDay = currentDate.getDate();
-    const days = generateCalendarDays(currentYear, currentMonth);
+    const days = generateCalendarDays(displayYear, displayMonth);
+    const isCurrentMonth = displayMonth === currentMonth && displayYear === currentYear;
+
+    useEffect(() => {
+        getUserCalendar()
+            .then(setCalendar)
+            .catch(() => setCalendar(null))
+            .finally(() => setLoading(false));
+    }, []);
+
     return (
-        <div className="scale-150 w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg bg-transparent">
-            {/* Title and Month */}
-            <div className="grid grid-cols-7 gap-0 sm:gap-2 mb-1 sm:mb-4">
-                
+        <div className="w-fit">
+            <div className=" mb-4 flex flex-row items-center justify-between gap-4 w-full px-4">
+                <div className={`text-4xl font-bold pb-2 ${pulseClass}`}>
+                    {loading ? 'Loading...' : calendar?.name || 'My Calendar'}
+                </div>
+                <div className={`text-4xl font-bold pb-2 ${pulseClass}`}>
+                    {new Date(displayYear, displayMonth).toLocaleString('default', { month: 'long', year: 'numeric' })}
+                </div>
             </div>
-            {/* Weekday labels */}
-            <div className="grid grid-cols-7 gap-0 sm:gap-2 mb-1 sm:mb-4">
-                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-                    <div key={day} className="text-center text-xs font-semibold text-blue-400 py-0.5 sm:py-2 uppercase tracking-wider">
-                        {day}
-                    </div>
-                ))}
-            </div>
-            {/* Calendar grid */}
-            <div className="grid grid-cols-7">
-                {days.map((dayObj, index) => (
-                    <div
-                        key={index}
-                        className={`
-                            aspect-square flex items-end justify-start p-1 cursor-pointer
-                            transition-all duration-200
-                            ${dayObj.day 
-                                ? 'hover:bg-gray-700/20'
-                                : ''
-                            }
-                            ${dayObj.isCurrentMonth && dayObj.day === currentDay
-                                ? 'text-blue-400 font-bold' 
-                                : dayObj.isCurrentMonth
-                                ? 'text-gray-300 hover:text-white'
-                                : 'text-gray-500 opacity-50'
-                            }
-                            ${index % 7 !== 6 ? 'border-r border-gray-600/50' : ''}
-                            ${Math.floor(index / 7) < 4 ? 'border-b border-gray-600/50' : ''}
-                        `}
-                    >
-                        <span className="text-xs md:text-sm font-semibold">{dayObj.day}</span>
-                    </div>
-                ))}
+            <div className="grid grid-cols-7 grid-rows-5 gap-0">
+                {days.map((dayObj, idx) => {
+                    // Calculate row and column
+                    const row = Math.floor(idx / 7);
+                    const col = idx % 7;
+                    // Only show right border if not last column, and bottom border if not last row
+                    const borderRight = col !== 6 ? 'border-r border-gray-500' : '';
+                    const borderBottom = row !== 4 ? 'border-b border-gray-500' : '';
+                    const isActive = isCurrentMonth && dayObj.isCurrentMonth && dayObj.day === currentDay;
+                    // Days of week labels
+                    const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                    return (
+                        <div
+                            key={idx}
+                            className={`h-[101px] w-[144px] flex items-end justify-start pt-1 pb-2.5 px-3 ${borderRight} ${borderBottom} ${isActive ? 'bg-blue-100/5' : ''}`}
+                        >
+                            <span className={`text-base font-semibold ${isActive ? pulseClass + ' text-blue-400' : dayObj.isCurrentMonth ? 'text-gray-300' : 'text-gray-500 opacity-50'}`}>
+                                {dayObj.day}
+                                {row === 0 && (
+                                    <span className="ml-1 text-sm text-gray-400 font-normal align-bottom uppercase">
+                                        {daysOfWeek[col]}
+                                    </span>
+                                )}
+                            </span>
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );

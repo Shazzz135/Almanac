@@ -55,7 +55,7 @@ export default function NewPassword() {
 	};
 
 	return (
-		<div className="w-full min-h-screen flex flex-col items-center justify-center py-8 px-4 sm:px-6 md:px-0">
+		<div className="w-full min-h-screen flex flex-col items-center justify-center py-8 px-4 sm:px-6 md:px-0 pt-16">
 			<div className="w-full sm:w-96 md:max-w-lg flex flex-col items-center justify-center">
 				{/* Main header */}
 				<div className="text-center mb-6 sm:mb-8">
