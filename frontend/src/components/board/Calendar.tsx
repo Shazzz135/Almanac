@@ -51,7 +51,7 @@ export default function Calendar({ displayMonth, displayYear }: CalendarProps) {
                     return (
                         <div
                             key={idx}
-                            className={`h-[101px] w-[144px] flex items-end justify-start pt-1 pb-2.5 px-3 ${borderRight} ${borderBottom} ${isActive ? 'bg-blue-100/5' : ''}`}
+                            className={`h-[101px] w-[144px] flex items-end justify-start pt-1 pb-2.5 px-3 ${borderRight} ${borderBottom} ${isActive ? 'bg-blue-100/15' : ''} transition-all duration-200 hover:bg-gray-400/10 hover:shadow-md cursor-pointer`}
                         >
                             <span className={`text-base font-semibold ${isActive ? pulseClass + ' text-blue-400' : dayObj.isCurrentMonth ? 'text-gray-300' : 'text-gray-500 opacity-50'}`}>
                                 {dayObj.day}
