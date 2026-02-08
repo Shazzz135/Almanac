@@ -8,16 +8,12 @@ export interface Calendar {
   owner_id: string;
 }
 
-export async function getUserCalendar(): Promise<Calendar> {
+// Returns all calendars the user is a member of
+export async function getUserCalendar(): Promise<{ calendars: Calendar[] }> {
   const response = await authenticatedFetch('/calendars');
   if (!response.ok) {
     throw new Error('Failed to fetch calendars');
   }
   const data = await response.json();
-  // Return the first calendar (user's primary calendar)
-  const calendars = data.calendars || [];
-  if (calendars.length === 0) {
-    throw new Error('No calendars found');
-  }
-  return calendars[0];
+  return { calendars: data.calendars || [] };
 }

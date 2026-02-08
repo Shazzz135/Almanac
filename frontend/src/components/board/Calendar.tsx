@@ -22,7 +22,13 @@ export default function Calendar({ displayMonth, displayYear }: CalendarProps) {
 
     useEffect(() => {
         getUserCalendar()
-            .then(setCalendar)
+            .then((data) => {
+                if (data && Array.isArray(data.calendars) && data.calendars.length > 0) {
+                    setCalendar(data.calendars[0]);
+                } else {
+                    setCalendar(null);
+                }
+            })
             .catch(() => setCalendar(null))
             .finally(() => setLoading(false));
     }, []);
