@@ -41,7 +41,7 @@ export default function Profile() {
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-4 py-8">
+    <div className="w-full max-w-2xl mx-auto px-4 py-8 pt-16">
       {/* Profile Card */}
       <div className="backdrop-blur-md bg-gray-900/50 border border-blue-500/30 rounded-lg overflow-hidden">
         {/* Header with gradient */}

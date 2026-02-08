@@ -21,7 +21,7 @@ export default function AccountMade() {
 	};
 
 	return (
-		<div className="w-full min-h-screen flex flex-col items-center justify-center py-8 px-4 sm:px-6 md:px-0">
+		<div className="w-full min-h-screen flex flex-col items-center justify-center py-8 px-4 sm:px-6 md:px-0 pt-16">
 			<div className="w-full sm:w-96 md:max-w-lg flex flex-col items-center justify-center">
 				{/* Success icon */}
 				<div className="mb-8 sm:mb-10 flex justify-center">

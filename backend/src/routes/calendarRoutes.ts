@@ -37,3 +37,4 @@ router.put('/:calendarId', authenticate, updateCalendar);
 router.delete('/:calendarId', authenticate, deleteCalendar);
 
 export default router;
+
