@@ -2,6 +2,8 @@ import { Response } from 'express';
 import { AuthRequest } from '../../middleware/authMiddleware';
 import { ApiResponseUtil } from '../../utils/apiResponse';
 import User, { UserRole, IUser } from '../../models/user';
+import Calendar, { CalendarType } from '../../models/calendar';
+import Member, { MemberRole } from '../../models/members';
 import { AuthorizationError } from '../../errors/authorizationError';
 import { asyncHandler } from '../../utils/asyncHandler';
 
@@ -63,6 +65,24 @@ export const createUser = asyncHandler(
         });
 
         await newUser.save();
+
+        // Create default personal calendar for the user
+        const calendar = new Calendar({
+            owner_id: newUser._id,
+            name: `${newUser.name}'s Calendar`,
+            type: CalendarType.PERSONAL,
+        });
+        await calendar.save();
+
+        // Create member entry for the user with OWNER role and set joined_at
+        const member = new Member({
+            user_id: newUser._id,
+            calendar_id: calendar._id,
+            role: MemberRole.OWNER,
+            accepted: true,
+            joined_at: new Date(),
+        });
+        await member.save();
 
         // Return user without sensitive fields
         const userResponse = newUser.toObject() as Partial<IUser>;

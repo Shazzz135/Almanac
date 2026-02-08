@@ -11,7 +11,8 @@ export interface IMember extends Document {
 	user_id: mongoose.Types.ObjectId;
 	calendar_id: mongoose.Types.ObjectId;
 	role: MemberRole;
-	joined_at: Date;
+	joined_at?: Date;
+	accepted: boolean;
 }
 
 const MemberSchema: Schema = new Schema(
@@ -34,7 +35,11 @@ const MemberSchema: Schema = new Schema(
 		},
 		joined_at: {
 			type: Date,
-			default: Date.now,
+			required: false,
+		},
+		accepted: {
+			type: Boolean,
+			default: false,
 		},
 	}
 );

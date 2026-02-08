@@ -12,7 +12,7 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 w-full h-16 bg-transparent backdrop-blur-md border-b border-blue-500/30 flex items-center justify-between px-3 sm:px-4 md:px-8 z-50">
       {/* Logo Section - Left */}
       <div 
-        onClick={() => navigate('/')}
+        onClick={() => navigate(isAuthenticated ? '/board' : '/')}
         className="flex items-center gap-2 sm:gap-3 cursor-pointer hover:opacity-80 transition-opacity min-w-0"
       >
         <div className={`text-xl sm:text-2xl md:text-3xl font-bold flex-shrink-0`}>

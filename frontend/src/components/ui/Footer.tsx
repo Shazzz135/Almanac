@@ -17,9 +17,9 @@ export default function Footer() {
           filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.8));
         }
       `}</style>
-      <footer className="w-full bg-transparent border-t border-blue-500/30 mt-12 sm:mt-16 md:mt-20">
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-8 sm:py-8">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-gray-500">
+      <footer className="w-full bg-transparent border-t border-blue-500/30 mt-6 sm:mt-8 md:mt-10">
+      <div className="max-w-7xl mx-auto px-2 sm:px-3 md:px-6 sm:py-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3 text-xs sm:text-sm text-gray-500">
           <p>&copy; {currentYear} Almanac. All rights reserved.</p>
           <div className="flex items-center gap-2 sm:gap-3">
             {/* X (formerly Twitter) */}
