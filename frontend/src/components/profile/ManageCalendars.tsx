@@ -32,8 +32,8 @@ export default function ManageCalendars() {
       ) : (
         <ul className="">
           {calendars.map((cal, idx) => (
-            <>
-              <li key={cal._id} className="flex items-center gap-3 py-3">
+            <li key={cal._id + '-row'}>
+              <div className="flex items-center gap-3 py-3">
                 {cal.type === 'personal' ? (
                   <svg className="w-5 h-5 text-blue-300" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" /></svg>
                 ) : (
@@ -41,13 +41,11 @@ export default function ManageCalendars() {
                 )}
                 <span className="text-white font-medium truncate">{cal.name}</span>
                 <span className="ml-auto text-xs text-gray-400 uppercase">{cal.type}</span>
-              </li>
+              </div>
               {idx !== calendars.length - 1 && (
-                <li key={cal._id + '-divider'}>
-                  <div className="border-t border-blue-500/20 w-full mx-auto" />
-                </li>
+                <div key={cal._id + '-divider'} className="border-t border-blue-500/20 w-full mx-auto" />
               )}
-            </>
+            </li>
           ))}
         </ul>
       )}
