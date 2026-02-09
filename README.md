@@ -1,4 +1,31 @@
+
 # Almanac
+
+## Project Overview
+
+**Almanac** is a modern, full-stack collaborative calendar and productivity platform. It enables users to create, join, and manage both personal and group calendars, with robust role-based access and a clean, responsive UI. Designed for teams and individuals, Almanac supports seamless event planning, member management, and secure authentication.
+
+## Tech Stack
+
+- **Frontend:** React (with TypeScript), Vite, Tailwind CSS
+- **Backend:** Node.js, Express, TypeScript
+- **Database:** MongoDB (Mongoose ODM)
+- **Authentication:** JWT-based, secure session management
+- **State Management:** React Context, custom hooks
+- **Other:** Modern ESLint/Prettier setup, RESTful API, modular folder structure
+
+## Key Features
+
+- Personal and group calendars with member roles (Owner, Editor, Viewer)
+- Secure authentication and session management
+- Responsive, accessible UI with modern design
+- Invite, add, and manage calendar members
+- Role-based permissions for calendar actions
+- Event and calendar CRUD operations
+- Profile management and account details
+- Modular, scalable codebase for easy maintenance
+
+---
 
 ## Database Diagram
 
