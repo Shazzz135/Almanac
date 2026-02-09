@@ -1,11 +1,16 @@
+
 import { useEffect, useState } from 'react';
+import ManageCalendarForm from './ManageCalendarForm';
+import Modal from '../ui/Modal';
 import { getUserCalendar } from '../../services/board/calendar';
 import type { Calendar } from '../../services/board/calendar';
 
 export default function ManageCalendars() {
+
   const [calendars, setCalendars] = useState<Calendar[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [manageIdx, setManageIdx] = useState<number | null>(null);
 
   useEffect(() => {
     getUserCalendar()
@@ -41,12 +46,33 @@ export default function ManageCalendars() {
                 )}
                 <span className="text-white font-medium truncate">{cal.name}</span>
                 <span className="ml-auto text-xs text-gray-400 uppercase">{cal.type}</span>
+                <button
+                  className="ml-4 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-all duration-150"
+                  onClick={() => setManageIdx(idx)}
+                >
+                  Manage
+                </button>
               </div>
               {idx !== calendars.length - 1 && (
                 <div key={cal._id + '-divider'} className="border-t border-blue-500/20 w-full mx-auto" />
               )}
             </li>
           ))}
+              {/* Modal for managing calendar */}
+              {manageIdx !== null && calendars[manageIdx] && (
+                <Modal open={true} disableClickOutside>
+                  <ManageCalendarForm
+                    calendarName={calendars[manageIdx].name}
+                    description={calendars[manageIdx].description || ''}
+                    calendarId={calendars[manageIdx]._id}
+                    onCancel={() => setManageIdx(null)}
+                    onSubmit={(data) => {
+                      setCalendars(prev => prev.map((c, i) => i === manageIdx ? { ...c, ...data } : c));
+                      setManageIdx(null);
+                    }}
+                  />
+                </Modal>
+              )}
         </ul>
       )}
     </div>
