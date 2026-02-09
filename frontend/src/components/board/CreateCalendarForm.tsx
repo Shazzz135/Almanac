@@ -44,11 +44,11 @@ export default function CreateCalendarForm({ onSubmit, onCancel }: CreateCalenda
         />
       </label>
       {error && <div className="text-red-400 text-sm">{error}</div>}
-      <div className="flex gap-2 mt-2">
-        <button type="submit" className="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-4 py-2 rounded transition-all">Create</button>
+      <div className="flex gap-2 mt-2 justify-end">
         {onCancel && (
           <button type="button" onClick={onCancel} className="bg-gray-700 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded transition-all">Cancel</button>
         )}
+        <button type="submit" className="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-4 py-2 rounded transition-all">Create</button>
       </div>
     </form>
   );
