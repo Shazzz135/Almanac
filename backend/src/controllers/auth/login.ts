@@ -72,12 +72,13 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
       user.role
     );
 
-    // Store refresh token in database
-    await new RefreshToken({
-      token: refreshToken,
-      userId: user._id,
-      expiresAt: JWTUtils.getTokenExpiration(refreshToken) || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-    }).save();
+
+    // Upsert refresh token in database (only one active per user)
+    await RefreshToken.upsertForUser(
+      user._id,
+      refreshToken,
+      JWTUtils.getTokenExpiration(refreshToken) || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    );
 
     res.json({
       success: true,

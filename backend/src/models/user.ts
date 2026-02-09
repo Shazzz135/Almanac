@@ -52,6 +52,7 @@ export interface IUser extends Document {
             push: boolean;
         };
     };
+    calendarCount?: number;
 }
 
 const PreferencesSchema = new Schema(
@@ -137,6 +138,12 @@ const UserSchema: Schema = new Schema(
         preferences: {
             type: PreferencesSchema,
             default: () => ({}),
+        },
+        calendarCount: {
+            type: Number,
+            default: 0,
+            min: 0,
+            max: 3,
         },
     },
     {

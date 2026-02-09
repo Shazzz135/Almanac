@@ -119,7 +119,6 @@ export default function Navbar() {
                               <svg className="w-5 h-5 text-blue-300" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2c0-2.21-3.58-4-8-4s-8 1.79-8 4v2h5m4-10a4 4 0 110-8 4 4 0 010 8zm6 8v-2a4 4 0 00-3-3.87" /></svg>
                             )}
                             <span className="text-white font-medium truncate">{cal.name}</span>
-                            <span className="ml-auto text-xs text-gray-400 uppercase">{cal.type}</span>
                           </div>
                         ))}
                       </>

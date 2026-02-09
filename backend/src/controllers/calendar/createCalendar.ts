@@ -18,6 +18,15 @@ export const createCalendar = async (req: Request, res: Response, next: NextFunc
             type,
         });
         await calendar.save();
+
+        // Increment calendarCount for user if less than 3
+        const User = require("../../models/user").default;
+        const user = await User.findById(owner_id);
+        if (user && typeof user.calendarCount === "number" && user.calendarCount < 3) {
+            user.calendarCount += 1;
+            await user.save();
+        }
+
         res.status(201).json({ success: true, calendar });
     } catch (error) {
         next(error);
