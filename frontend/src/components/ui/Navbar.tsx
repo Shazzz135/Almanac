@@ -4,8 +4,11 @@ import { useAuth } from '../../hooks/auth/useAuth';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../../public/Logo.webp';
 import { useEffect, useRef, useState } from 'react';
+
 import { getUserCalendar } from '../../services/board/calendar';
 import type { Calendar } from '../../services/board/calendar';
+import Modal from './Modal';
+import CreateCalendarForm from '../board/CreateCalendarForm';
 
 export default function Navbar() {
   const pulseClass = useGradientPulse();
@@ -18,6 +21,7 @@ export default function Navbar() {
   const [calLoading, setCalLoading] = useState(false);
   const [calError, setCalError] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   // Fetch calendars when dropdown opens for the first time
   useEffect(() => {
@@ -124,7 +128,10 @@ export default function Navbar() {
                     {calendars.length < 3 && !calLoading && !calError && (
                       <div className="mt-2 px-4">
                         <button
-                          onClick={() => {/* TODO: open add calendar modal or navigate */}}
+                          onClick={() => {
+                            setDropdownOpen(false);
+                            setShowCreateModal(true);
+                          }}
                           className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-md transition-all duration-200 mt-1"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
@@ -146,6 +153,13 @@ export default function Navbar() {
           )
         )}
       </div>
+      {/* Create Calendar Modal */}
+      <Modal open={showCreateModal} disableClickOutside>
+        <CreateCalendarForm
+          onSubmit={() => {}}
+          onCancel={() => setShowCreateModal(false)}
+        />
+      </Modal>
     </nav>
   );
 }
