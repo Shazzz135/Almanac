@@ -4,26 +4,38 @@ import Switch from "../components/board/Switch";
 
 export default function Board() {
     const today = new Date();
-    const [displayMonth, setDisplayMonth] = useState(today.getMonth());
-    const [displayYear, setDisplayYear] = useState(today.getFullYear());
+    const [{ displayMonth, displayYear }, setDisplay] = useState({
+        displayMonth: today.getMonth(),
+        displayYear: today.getFullYear(),
+    });
 
     const handlePreviousMonth = () => {
-        setDisplayMonth(prev => {
-            if (prev === 0) {
-                setDisplayYear(year => year - 1);
-                return 11;
+        setDisplay(prev => {
+            if (prev.displayMonth === 0) {
+                return {
+                    displayMonth: 11,
+                    displayYear: prev.displayYear - 1,
+                };
             }
-            return prev - 1;
+            return {
+                displayMonth: prev.displayMonth - 1,
+                displayYear: prev.displayYear,
+            };
         });
     };
 
     const handleNextMonth = () => {
-        setDisplayMonth(prev => {
-            if (prev === 11) {
-                setDisplayYear(year => year + 1);
-                return 0;
+        setDisplay(prev => {
+            if (prev.displayMonth === 11) {
+                return {
+                    displayMonth: 0,
+                    displayYear: prev.displayYear + 1,
+                };
             }
-            return prev + 1;
+            return {
+                displayMonth: prev.displayMonth + 1,
+                displayYear: prev.displayYear,
+            };
         });
     };
 
