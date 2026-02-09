@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 
+import mongoose from 'mongoose';
+
 export interface IRefreshToken extends mongoose.Document {
   token: string;
   userId: mongoose.Types.ObjectId;
@@ -58,6 +60,18 @@ refreshTokenSchema.statics.revokeToken = async function (token: string) {
   );
 };
 
+// Upsert (update or insert) a refresh token for a user
+refreshTokenSchema.statics.upsertForUser = async function (userId, token, expiresAt) {
+  // Revoke all previous tokens for this user
+  await this.updateMany({ userId, isRevoked: false }, { isRevoked: true });
+  // Upsert the new token
+  return this.findOneAndUpdate(
+    { userId },
+    { token, userId, expiresAt, isRevoked: false },
+    { upsert: true, new: true, setDefaultsOnInsert: true }
+  );
+};
+
 refreshTokenSchema.statics.isTokenValid = async function (token: string) {
   const refreshToken = await this.findOne({
     token,
@@ -71,6 +85,7 @@ interface IRefreshTokenModel extends mongoose.Model<IRefreshToken> {
   revokeAllForUser(userId: mongoose.Types.ObjectId): Promise<any>;
   revokeToken(token: string): Promise<any>;
   isTokenValid(token: string): Promise<boolean>;
+  upsertForUser(userId: mongoose.Types.ObjectId, token: string, expiresAt: Date): Promise<IRefreshToken>;
 }
 
 const RefreshToken = mongoose.model<IRefreshToken, IRefreshTokenModel>('RefreshToken', refreshTokenSchema);
