@@ -3,6 +3,7 @@ import { useAuth } from '../hooks/auth/useAuth';
 import { useNavigate } from 'react-router-dom';
 import AccountDetails from '../components/profile/AccountDetails';
 import ManageCalendars from '../components/profile/ManageCalendars';
+import InvitationsInbox from '../components/profile/InvitationsInbox';
 
 export default function Profile() {
   const { user, logout, isLoading } = useAuth();
@@ -44,34 +45,41 @@ export default function Profile() {
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-4 py-8 pt-16">
-      {/* Profile Card */}
-      <div className="backdrop-blur-md bg-gray-900/50 border border-blue-500/30 rounded-lg overflow-hidden">
-        {/* Header with gradient */}
-        <div className="bg-gradient-to-r from-blue-600/20 to-blue-500/20 border-b border-blue-500/30 px-8 py-6">
-          <h1 className="text-3xl font-bold text-blue-100">Account Details</h1>
-          <p className="text-blue-300/70 mt-1">View and manage your profile information</p>
-        </div>
-
-        {/* Content */}
-        <div className="px-8 py-8 space-y-6">
-          <AccountDetails />
-          <ManageCalendars />
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-blue-500/20">
-            <button
-              onClick={() => navigate('/board')}
-              className="flex-1 px-6 py-3 border border-blue-400/60 text-blue-300 font-semibold rounded-lg hover:bg-blue-500/20 hover:border-blue-300 hover:text-blue-100 transition-all duration-200"
-            >
-              Back to Board
-            </button>
-            <button
-              onClick={handleLogout}
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-red-600 to-red-500 text-white font-semibold rounded-lg hover:from-red-500 hover:to-red-400 hover:shadow-lg hover:shadow-red-500/50 transition-all duration-200"
-            >
-              Logout
-            </button>
+    <div className="w-full max-w-6xl mx-auto px-4 py-8 pt-16">
+      <div className="flex flex-col lg:flex-row gap-8 items-start">
+        {/* Profile Card */}
+        <div className="flex-1 min-w-0">
+          <div className="backdrop-blur-md bg-gray-900/50 border border-blue-500/30 rounded-lg overflow-hidden">
+            {/* Header with gradient */}
+            <div className="bg-gradient-to-r from-blue-600/20 to-blue-500/20 border-b border-blue-500/30 px-8 py-6">
+              <h1 className="text-3xl font-bold text-blue-100">Account Details</h1>
+              <p className="text-blue-300/70 mt-1">View and manage your profile information</p>
+            </div>
+            {/* Content */}
+            <div className="px-8 py-8 space-y-6">
+              <AccountDetails />
+              <ManageCalendars />
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-blue-500/20">
+                <button
+                  onClick={() => navigate('/board')}
+                  className="flex-1 px-6 py-3 border border-blue-400/60 text-blue-300 font-semibold rounded-lg hover:bg-blue-500/20 hover:border-blue-300 hover:text-blue-100 transition-all duration-200"
+                >
+                  Back to Board
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-red-600 to-red-500 text-white font-semibold rounded-lg hover:from-red-500 hover:to-red-400 hover:shadow-lg hover:shadow-red-500/50 transition-all duration-200"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
           </div>
+        </div>
+        {/* Invitations Inbox */}
+        <div className="w-full lg:w-[420px] flex-shrink-0">
+          <InvitationsInbox />
         </div>
       </div>
     </div>
