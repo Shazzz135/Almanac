@@ -7,8 +7,10 @@ import { useEffect, useRef, useState } from 'react';
 
 import { getUserCalendar } from '../../services/board/calendar';
 import type { Calendar } from '../../services/board/calendar';
+import { getCurrentMember } from '../../services/board/member';
 import Modal from './Modal';
 import CreateCalendarForm from '../board/CreateCalendarForm';
+import InviteUserForm from '../board/InviteUserForm';
 
 export default function Navbar() {
   const pulseClass = useGradientPulse();
@@ -20,19 +22,27 @@ export default function Navbar() {
   const [calendars, setCalendars] = useState<Calendar[]>([]);
   const [calLoading, setCalLoading] = useState(false);
   const [calError, setCalError] = useState<string | null>(null);
+  const [activeCalendarId, setActiveCalendarId] = useState<string | null>(null);
+  const [memberRole, setMemberRole] = useState<'owner' | 'editor' | 'viewer' | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showInviteModal, setShowInviteModal] = useState(false);
 
-  // Fetch calendars when dropdown opens for the first time
+  // Fetch calendars and member role on mount
   useEffect(() => {
-    if (dropdownOpen && calendars.length === 0 && !calLoading) {
+    if (!calLoading && calendars.length === 0) {
       setCalLoading(true);
       getUserCalendar()
         .then((data) => {
           if (data && Array.isArray(data.calendars)) {
             setCalendars(data.calendars);
+            // Set active calendar to first one (or customize as needed)
+            if (data.calendars.length > 0) {
+              setActiveCalendarId(data.calendars[0]._id);
+            }
           } else {
             setCalendars([]);
+            setActiveCalendarId(null);
           }
         })
         .catch(() => {
@@ -40,7 +50,18 @@ export default function Navbar() {
         })
         .finally(() => setCalLoading(false));
     }
-  }, [dropdownOpen, calendars.length, calLoading]);
+  }, [calendars.length, calLoading]);
+
+  // Fetch member role for active calendar
+  useEffect(() => {
+    if (activeCalendarId) {
+      getCurrentMember(activeCalendarId).then((member) => {
+        setMemberRole(member?.role || null);
+      });
+    } else {
+      setMemberRole(null);
+    }
+  }, [activeCalendarId]);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -89,6 +110,31 @@ export default function Navbar() {
             </div>
           ) : (
             <>
+              {/* Invite User Button (only for owner) */}
+              {memberRole === 'owner' && (
+                <>
+                  <button
+                    className="px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 text-xs sm:text-sm md:text-base border border-blue-400/60 text-blue-300 font-semibold rounded-lg hover:bg-blue-500/20 hover:border-blue-300 hover:text-blue-100 transition-all duration-200 whitespace-nowrap flex items-center gap-0.5"
+                    onClick={() => setShowInviteModal(true)}
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                    </svg>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                  </button>
+                  <Modal open={showInviteModal} disableClickOutside>
+                    <InviteUserForm
+                      onSubmit={() => {
+                        // TODO: connect to backend invite logic
+                        setShowInviteModal(false);
+                      }}
+                      onCancel={() => setShowInviteModal(false)}
+                    />
+                  </Modal>
+                </>
+              )}
               {/* Calendars Dropdown */}
               <div className="relative" ref={dropdownRef}>
                 <button
