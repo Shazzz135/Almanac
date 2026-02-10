@@ -31,19 +31,17 @@
 
 **Description:**
 
-This simple model represents thoughtful planning for my app. It displays
-the different tables that will be used and how they are all connected.
-Here are some important factors:
+This model illustrates the core data relationships in Almanac:
 
--   Each **User** can have access to multiple **Calendars** (1 user → N
-    calendars). Each user can create any number of personal or group
-    calendars.\
--   Each **Calendar** has N **Events** linked to it --- there can be any
-    number of events per calendar (1 calendar → N events).\
--   Each **Calendar** also has N **Members**, depending on whether it is
-    a personal or group calendar (1 calendar → N members).\
--   Each **User** can have only one **Member** status per calendar (1
-    user → 1 membership per calendar).
+- **Users** can own or join multiple calendars (personal or group).
+- **Calendars** can have any number of members and events.
+- **Members** represent a user's role (Owner, Editor, Viewer) within a specific calendar. Each user can only have one membership per calendar.
+- **Events** are linked to calendars; each calendar can contain many events.
+
+Key points:
+- A user can create unlimited calendars and join others by invitation.
+- Membership is unique per user/calendar pair (no duplicates).
+- Member roles control permissions for calendar management and event editing.
 
 The main control mechanism for managing calendars is the member role:\
 - **Owners** can manage members and calendars.\
