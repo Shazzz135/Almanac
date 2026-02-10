@@ -13,6 +13,8 @@ export interface IMember extends Document {
 	role: MemberRole;
 	joined_at?: Date;
 	accepted: boolean;
+	createdAt: Date;
+	updatedAt: Date;
 }
 
 const MemberSchema: Schema = new Schema(
@@ -41,6 +43,9 @@ const MemberSchema: Schema = new Schema(
 			type: Boolean,
 			default: false,
 		},
+	},
+	{
+		timestamps: true,
 	}
 );
 

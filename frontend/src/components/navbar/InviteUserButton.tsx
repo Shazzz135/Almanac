@@ -1,14 +1,22 @@
 import Modal from '../ui/Modal';
 import InviteUserForm from '../board/InviteUserForm';
 import { useState } from 'react';
+import type { MemberRole } from '../../types/board/memberTypes';
 
 interface InviteUserButtonProps {
-  memberRole: 'owner' | 'editor' | 'viewer' | null;
+  memberRole: MemberRole | null;
+  calendarId?: string | null;
 }
 
-export default function InviteUserButton({ memberRole }: InviteUserButtonProps) {
+export default function InviteUserButton({ memberRole, calendarId }: InviteUserButtonProps) {
   const [showInviteModal, setShowInviteModal] = useState(false);
-  if (memberRole !== 'owner') return null;
+  
+  if (memberRole !== 'owner' || !calendarId) return null;
+
+  const handleInviteSuccess = () => {
+    setShowInviteModal(false);
+  };
+
   return (
     <>
       <button
@@ -24,7 +32,8 @@ export default function InviteUserButton({ memberRole }: InviteUserButtonProps) 
       </button>
       <Modal open={showInviteModal} disableClickOutside>
         <InviteUserForm
-          onSubmit={() => setShowInviteModal(false)}
+          calendarId={calendarId}
+          onSuccess={handleInviteSuccess}
           onCancel={() => setShowInviteModal(false)}
         />
       </Modal>

@@ -1,13 +1,5 @@
 import { authenticatedFetch } from '../../utils/auth/authClient';
-
-export interface Member {
-  user_id: string;
-  calendar_id: string;
-  role: 'owner' | 'editor' | 'viewer';
-  name?: string;
-  email?: string;
-  accepted?: boolean;
-}
+import type { Member } from '../../types/board/memberTypes';
 
 export async function getAllMembers(calendarId: string): Promise<Member[]> {
   const response = await authenticatedFetch(`/members/all/${calendarId}`);

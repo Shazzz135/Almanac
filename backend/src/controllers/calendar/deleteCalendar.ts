@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import Calendar from "../../models/calendar";
+import Member from "../../models/members";
+import User from "../../models/user";
 import { CustomError } from "../../errors/CustomError";
 
 export const deleteCalendar = async (req: Request, res: Response, next: NextFunction) => {
@@ -13,11 +15,9 @@ export const deleteCalendar = async (req: Request, res: Response, next: NextFunc
         }
 
         // Cascade delete members
-        const Member = require("../../models/members").default;
         await Member.deleteMany({ calendar_id: calendarId });
 
         // Decrement calendarCount for user, not below 0
-        const User = require("../../models/user").default;
         const user = await User.findById(owner_id);
         if (user && typeof user.calendarCount === "number" && user.calendarCount > 0) {
             user.calendarCount -= 1;
