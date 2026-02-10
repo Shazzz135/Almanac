@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { generateCalendarDays } from '../../utils/board/getCalendarData';
 import { useGradientPulse } from '../../hooks/ui/useGradientPulse';
-import { getUserCalendar } from '../../services/board/calendar';
+import { useAuth } from '../../hooks/auth/useAuth';
+import { useCalendar } from '../../hooks/board/useCalendar';
 import type { Calendar as CalendarType } from '../../services/board/calendar';
 
 interface CalendarProps {
@@ -10,9 +11,10 @@ interface CalendarProps {
 }
 
 export default function Calendar({ displayMonth, displayYear }: CalendarProps) {
+    const { isAuthenticated, isLoading: authLoading } = useAuth();
+    const { calendars, activeCalendarId, isLoading: calLoading } = useCalendar();
     const pulseClass = useGradientPulse();
     const [calendar, setCalendar] = useState<CalendarType | null>(null);
-    const [loading, setLoading] = useState(true);
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth();
     const currentYear = currentDate.getFullYear();
@@ -22,23 +24,37 @@ export default function Calendar({ displayMonth, displayYear }: CalendarProps) {
     const isCurrentMonth = displayMonth === currentMonth && displayYear === currentYear;
 
     useEffect(() => {
-        getUserCalendar()
-            .then((data) => {
-                if (data && Array.isArray(data.calendars) && data.calendars.length > 0) {
-                    setCalendar(data.calendars[0]);
-                } else {
-                    setCalendar(null);
-                }
-            })
-            .catch(() => setCalendar(null))
-            .finally(() => setLoading(false));
-    }, []);
+        // Only set calendar if user is authenticated and auth has finished loading
+        if (!isAuthenticated || authLoading) {
+            setCalendar(null);
+            return;
+        }
+
+        // Find and set the active calendar
+        if (activeCalendarId && calendars.length > 0) {
+            const selected = calendars.find(cal => cal._id === activeCalendarId);
+            setCalendar(selected || null);
+        } else {
+            setCalendar(null);
+        }
+    }, [isAuthenticated, authLoading, activeCalendarId, calendars]);
+
+    // Wait for calendar data to be loaded before rendering
+    const isReadyToRender = !calLoading && calendar !== null;
+
+    if (!isReadyToRender) {
+        return (
+            <div className="w-fit flex flex-col items-center justify-center">
+                <div className="text-2xl text-blue-400">Loading calendar...</div>
+            </div>
+        );
+    }
 
     return (
         <div className="w-fit">
             <div className=" mb-4 flex flex-row items-center justify-between gap-4 w-full px-4">
                 <div className={`text-4xl font-bold pb-2 underline underline-offset-4 decoration-blue-400 ${pulseClass}`}>
-                    {loading ? 'Loading...' : calendar?.name || 'My Calendar'}
+                    {calendar.name}
                 </div>
                 <div className={`text-4xl font-bold pb-2 underline underline-offset-4 decoration-blue-400 ${pulseClass}`}>
                     {new Date(displayYear, displayMonth).toLocaleString('default', { month: 'long', year: 'numeric' })}

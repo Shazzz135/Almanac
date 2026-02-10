@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import Calendar from "../../models/calendar";
+import Member from "../../models/members";
+import User from "../../models/user";
 import { CustomError } from "../../errors/CustomError";
 
 export const createCalendar = async (req: Request, res: Response, next: NextFunction) => {
@@ -19,8 +21,17 @@ export const createCalendar = async (req: Request, res: Response, next: NextFunc
         });
         await calendar.save();
 
+        // Create owner membership record
+        const ownerMembership = new Member({
+            user_id: owner_id,
+            calendar_id: calendar._id,
+            role: 'owner',
+            accepted: true,
+            joined_at: new Date(),
+        });
+        await ownerMembership.save();
+
         // Increment calendarCount for user if less than 3
-        const User = require("../../models/user").default;
         const user = await User.findById(owner_id);
         if (user && typeof user.calendarCount === "number" && user.calendarCount < 3) {
             user.calendarCount += 1;

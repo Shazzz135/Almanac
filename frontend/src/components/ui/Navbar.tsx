@@ -3,9 +3,9 @@
 import { useAuth } from '../../hooks/auth/useAuth';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { getUserCalendar } from '../../services/board/calendar';
-import type { Calendar } from '../../services/board/calendar';
+import { useCalendar } from '../../hooks/board/useCalendar';
 import { getCurrentMember } from '../../services/board/member';
+import { createCalendar } from '../../services/board/calendar';
 import Modal from './Modal';
 import CreateCalendarForm from '../board/CreateCalendarForm';
 import LogoSection from '../navbar/LogoSection';
@@ -18,37 +18,10 @@ import ToCalendarButton from '../navbar/ToCalendarButton';
 export default function Navbar() {
   const { isAuthenticated, isLoading } = useAuth();
   const location = useLocation();
+  const { activeCalendarId, refreshCalendars } = useCalendar();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [calendars, setCalendars] = useState<Calendar[]>([]);
-  const [calLoading, setCalLoading] = useState(false);
-  const [calError, setCalError] = useState<string | null>(null);
-  const [activeCalendarId, setActiveCalendarId] = useState<string | null>(null);
   const [memberRole, setMemberRole] = useState<'owner' | 'editor' | 'viewer' | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
-
-  // Fetch calendars and member role on mount
-  useEffect(() => {
-    if (!calLoading && calendars.length === 0) {
-      setCalLoading(true);
-      getUserCalendar()
-        .then((data) => {
-          if (data && Array.isArray(data.calendars)) {
-            setCalendars(data.calendars);
-            // Set active calendar to first one (or customize as needed)
-            if (data.calendars.length > 0) {
-              setActiveCalendarId(data.calendars[0]._id);
-            }
-          } else {
-            setCalendars([]);
-            setActiveCalendarId(null);
-          }
-        })
-        .catch(() => {
-          setCalError('Failed to load calendars');
-        })
-        .finally(() => setCalLoading(false));
-    }
-  }, [calendars.length, calLoading]);
 
   // Fetch member role for active calendar
   useEffect(() => {
@@ -60,6 +33,20 @@ export default function Navbar() {
       setMemberRole(null);
     }
   }, [activeCalendarId]);
+
+  const handleCreateCalendar = async (data: { name: string; description: string }) => {
+    try {
+      console.log('[Navbar] Creating calendar:', data.name);
+      await createCalendar(data.name, data.description);
+      console.log('[Navbar] Calendar created successfully, refreshing list');
+      await refreshCalendars();
+      console.log('[Navbar] Calendar list refreshed');
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Unknown error occurred';
+      console.error('[Navbar] Failed to create calendar:', errorMsg);
+      throw err;
+    }
+  };
 
   // Dropdown outside click logic is now handled in CalendarsDropdown subcomponent
 
@@ -78,11 +65,8 @@ export default function Navbar() {
               {/* Hide InviteUserButton and CalendarsDropdown on profile page */}
               {location.pathname !== '/profile' && (
                 <>
-                  <InviteUserButton memberRole={memberRole} />
+                  <InviteUserButton memberRole={memberRole} calendarId={activeCalendarId} />
                   <CalendarsDropdown
-                    calendars={calendars}
-                    calLoading={calLoading}
-                    calError={calError}
                     dropdownOpen={dropdownOpen}
                     setDropdownOpen={setDropdownOpen}
                     setShowCreateModal={setShowCreateModal}
@@ -94,11 +78,14 @@ export default function Navbar() {
           )
         )}
       </div>
+
       {/* Create Calendar Modal */}
       <Modal open={showCreateModal} disableClickOutside>
         <CreateCalendarForm
-          onSubmit={() => {}}
-          onCancel={() => setShowCreateModal(false)}
+          onSubmit={handleCreateCalendar}
+          onCancel={() => {
+            setShowCreateModal(false);
+          }}
         />
       </Modal>
     </nav>

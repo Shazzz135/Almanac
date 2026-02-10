@@ -16,8 +16,7 @@ export const updateMemberRole = async (req: Request, res: Response, next: NextFu
 
         // Role check: only owner/editor can update member roles
         const requesterId = req.user?._id;
-        const MemberModel = require("../../models/members").default;
-        const requesterMembership = await MemberModel.findOne({ user_id: requesterId, calendar_id: member.calendar_id });
+        const requesterMembership = await Member.findOne({ user_id: requesterId, calendar_id: member.calendar_id });
         if (!requesterMembership || (requesterMembership.role !== "owner" && requesterMembership.role !== "editor")) {
             throw new CustomError("Only owners or editors can update member roles", 403, "MEMBER_ERROR");
         }
