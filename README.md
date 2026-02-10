@@ -54,3 +54,54 @@ owner.\
 **Diagram:**
 
 ![Database Diagram](https://imgur.com/PZFRppW.jpeg)
+
+---
+
+## Database Model Manipulation & Management
+
+This section explains how each core database model is manipulated and managed throughout the Almanac application, both in the backend (API, business logic) and frontend (user actions, API calls).
+
+### User
+- **Backend:**
+    - User accounts are created, authenticated, and managed via secure endpoints (register, login, password reset, email verification).
+    - Passwords are hashed with bcrypt. User preferences and calendar counts are updated on relevant actions (e.g., joining/leaving calendars).
+- **Frontend:**
+    - User registration, login, and profile management are handled via forms and context providers. State is synced with backend via REST API.
+
+### Calendar
+- **Backend:**
+    - Calendars are created, updated, and deleted via RESTful endpoints. Each calendar is linked to an owner and can be either personal or group type.
+    - On creation, an owner membership is created. Deletion cascades to remove all related members.
+- **Frontend:**
+    - Users can create, edit, and delete calendars through UI forms. All actions trigger API calls and update local state/context for live feedback.
+
+### Member
+- **Backend:**
+    - Members represent a user's relationship to a calendar, including their role (owner, editor, viewer) and invitation status.
+    - Adding/removing members updates both the Member collection and the user's calendar count. Role changes are validated for permissions.
+- **Frontend:**
+    - Users can invite, accept, decline, or remove members from calendars. Member lists and roles are managed via dedicated forms and modals, with all changes sent to the backend.
+
+### PendingUser
+- **Backend:**
+    - Handles users who have registered but not yet verified their email. Stores verification codes and expiry.
+- **Frontend:**
+    - Registration flow includes email verification step, with UI feedback and API polling.
+
+### RefreshToken
+- **Backend:**
+    - Stores refresh tokens for JWT-based authentication, supporting secure session management and token revocation.
+- **Frontend:**
+    - Token refresh is handled automatically by the auth client, keeping users logged in seamlessly.
+
+---
+
+## Copilot Usage
+
+Almanac development leverages GitHub Copilot for:
+- Line/File completion and code suggestions
+- File management and organization
+- Bug fixes and refactoring
+- General planning for integration order and feature rollout
+
+Copilot is used as a productivity tool to streamline development, assist with repetitive tasks, and help maintain code quality. I believe it is a very useful tool and would love to keep using it as it is now part of the future of development.
