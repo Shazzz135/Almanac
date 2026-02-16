@@ -7,6 +7,7 @@ interface ModalProps {
   open: boolean;
   children: ReactNode;
   disableClickOutside?: boolean;
+  onClose?: () => void;
 }
 
 function getBoardPortalRoot() {
@@ -19,7 +20,7 @@ function getBoardPortalRoot() {
   return el;
 }
 
-export default function Modal({ open, children }: ModalProps) {
+export default function Modal({ open, children, disableClickOutside, onClose }: ModalProps) {
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden';
@@ -35,7 +36,10 @@ export default function Modal({ open, children }: ModalProps) {
 
   // Use a portal to render modal inside board page layer
   return createPortal(
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60">
+    <div
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60"
+      onClick={disableClickOutside ? undefined : onClose}
+    >
       <div
         className="bg-transparent w-full max-w-lg mx-auto flex flex-col justify-center items-center min-h-[200px]"
         style={{
@@ -45,6 +49,7 @@ export default function Modal({ open, children }: ModalProps) {
           transform: 'translate(-50%, -50%)',
         }}
         tabIndex={-1}
+        onClick={e => e.stopPropagation()}
       >
         {children}
       </div>
