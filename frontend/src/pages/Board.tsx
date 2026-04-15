@@ -59,30 +59,26 @@ export default function Board() {
         }
     };
 
-    // Redirect to landing page if not authenticated
+    // Redirect to landing page if not authenticated (check only after auth loading is complete)
     if (!isLoading && !isAuthenticated) {
         return <Navigate to="/" replace />;
     }
 
-    // Show loading state while checking authentication
-    if (isLoading) {
-        return (
-            <div className="flex items-center justify-center w-full h-full">
-                <div className="text-2xl text-blue-400">Loading...</div>
-            </div>
-        );
+    // Return early if auth is still loading or not authenticated yet
+    if (isLoading || !isAuthenticated) {
+        return null;
     }
 
-    // Show loading state while calendars are being fetched
+    // If calendars are still loading, show only the calendar (no switches during loading)
     if (calLoading) {
         return (
-            <div className="flex items-center justify-center w-full h-screen">
-                <div className="text-2xl text-blue-400">Loading calendar...</div>
+            <div className="pt-4 flex items-stretch justify-center w-full">
+                <Calendar displayMonth={displayMonth} displayYear={displayYear} />
             </div>
         );
     }
 
-    // Show create calendar prompt if no calendars
+    // Show create calendar prompt if no calendars found
     if (calendars.length === 0) {
         return (
             <div className="flex items-center justify-center w-full h-screen">
@@ -108,13 +104,11 @@ export default function Board() {
                         onCancel={() => setShowCreateModal(false)}
                     />
                 </Modal>
-
-                {/* Notifications */}
-                {/* Removed - notifications now inside CreateCalendarForm */}
             </div>
         );
     }
 
+    // Calendars loaded and found - show with switches
     return (
         <div className="pt-4 flex items-stretch justify-center w-full gap-0">
             <Switch direction="left" onClick={handlePreviousMonth} />

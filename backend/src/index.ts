@@ -1,16 +1,18 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { createServer } from 'http';
 import connectDB from './configuration/db';
 import routes from './routes';
 import { notFound, errorHandler } from './middleware/errorMiddleware';
+import { initializeWebSocket } from './middleware/websocket';
 
 // load environment variables
 dotenv.config();
 
 // create express app
 const app = express();
-const port = process.env.BACKEND_PORT || 5001;
+const port = process.env.BACKEND_PORT || 5000;
 
 // connect to mongodb
 connectDB();
@@ -61,8 +63,13 @@ app.get('/', (_req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
+// Create HTTP server and initialize WebSocket
+const httpServer = createServer(app);
+initializeWebSocket(httpServer);
+
 // start server
-app.listen(port, () => {
+httpServer.listen(port, () => {
   console.log(`server running on port ${port} (http://localhost:${port})`);
   console.log(`CORS enabled for: ${isProduction ? process.env.ALLOWED_ORIGINS || 'specific origins' : 'all localhost origins'}`);
+  console.log(`WebSocket available at ws://localhost:${port}`);
 }); 

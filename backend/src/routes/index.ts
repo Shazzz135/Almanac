@@ -126,10 +126,12 @@ router.get('/test', (_req, res) => {
 
 
 import memberRoutes from './memberRoutes';
+import eventRoutes from './eventRoutes';
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
 router.use('/status', statusRoutes);
 router.use('/calendars', calendarRoutes);
 router.use('/members', memberRoutes);
+router.use('/events', eventRoutes);
 
 export default router;
