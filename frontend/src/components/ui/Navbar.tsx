@@ -1,6 +1,6 @@
 
-
 import { useAuth } from '../../hooks/auth/useAuth';
+import { useGradientPulse } from '../../hooks/ui/useGradientPulse';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useCalendar } from '../../hooks/board/useCalendar';
@@ -17,6 +17,7 @@ import ToCalendarButton from '../navbar/ToCalendarButton';
 
 export default function Navbar() {
   const { isAuthenticated, isLoading } = useAuth();
+  const pulseClass = useGradientPulse();
   const location = useLocation();
   const { activeCalendarId, refreshCalendars } = useCalendar();
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -53,7 +54,7 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 left-0 w-full h-16 bg-transparent backdrop-blur-md border-b border-blue-500/30 flex items-center justify-between px-3 sm:px-4 md:px-8 z-50">
       {/* Logo Section - Left */}
-      <LogoSection isAuthenticated={isAuthenticated} />
+      <LogoSection isAuthenticated={isAuthenticated} pulseClass={pulseClass} />
 
       {/* Right Section - Conditional Rendering */}
       <div className="flex-shrink-0 flex items-center gap-2 sm:gap-3">

@@ -10,6 +10,7 @@ interface EventFormProps {
     location: string;
     start: string;
     end: string;
+    allDay: boolean;
   }) => void;
 }
 
@@ -94,12 +95,29 @@ const EventForm: React.FC<EventFormProps> = ({ defaultDate, onCancel, onSubmit }
   const [color, setColor] = useState(COLORS[0]);
   const [allDay, setAllDay] = useState(false);
   const [location, setLocation] = useState('');
-  const [start, setStart] = useState(defaultDate.toISOString().slice(0, 16));
-  const [end, setEnd] = useState(defaultDate.toISOString().slice(0, 16));
+  const [start, setStart] = useState(() => {
+    const startStr = defaultDate.toISOString().slice(0, 16);
+    console.log('[EventForm] Initializing start:', startStr);
+    return startStr;
+  });
+  const [end, setEnd] = useState(() => {
+    // Set end time to 1 hour after start time
+    const endDate = new Date(defaultDate);
+    endDate.setHours(endDate.getHours() + 1);
+    const endStr = endDate.toISOString().slice(0, 16);
+    console.log('[EventForm] Initializing end (start + 1hr):', endStr);
+    return endStr;
+  });
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    onSubmit({ title, description, color, location, start, end });
+    const eventData = { title, description, color, location, start, end, allDay };
+    console.log('[EventForm] Submitting event:', eventData);
+    console.log('[EventForm] Start parsed:', new Date(start));
+    console.log('[EventForm] End parsed:', new Date(end));
+    console.log('[EventForm] End > Start?', new Date(end) > new Date(start));
+    console.log('[EventForm] All Day?', allDay);
+    onSubmit(eventData);
   }
 
   return (
@@ -136,8 +154,9 @@ const EventForm: React.FC<EventFormProps> = ({ defaultDate, onCancel, onSubmit }
               onChange={() => {
                 setAllDay(!allDay);
                 if (!allDay) {
-                  setStart(defaultDate.toISOString().slice(0, 10) + 'T12:00');
-                  setEnd(defaultDate.toISOString().slice(0, 10) + 'T12:00');
+                  // When enabling all day, set start to start of day and end to end of day
+                  setStart(defaultDate.toISOString().slice(0, 10) + 'T00:00');
+                  setEnd(defaultDate.toISOString().slice(0, 10) + 'T23:59');
                 }
               }}
               className="sr-only peer"

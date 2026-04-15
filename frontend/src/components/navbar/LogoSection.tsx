@@ -3,9 +3,10 @@ const logo = '/Logo.webp';
 
 interface LogoSectionProps {
   isAuthenticated: boolean;
+  pulseClass: string;
 }
 
-export default function LogoSection({ isAuthenticated }: LogoSectionProps) {
+export default function LogoSection({ isAuthenticated, pulseClass }: LogoSectionProps) {
   const navigate = useNavigate();
   return (
     <div 
@@ -15,7 +16,7 @@ export default function LogoSection({ isAuthenticated }: LogoSectionProps) {
       <div className={`text-xl sm:text-2xl md:text-3xl font-bold flex-shrink-0`}>
         <img src={logo} alt="Almanac Logo" className="h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10" />
       </div>
-      <div className={`text-2xl sm:text-3xl md:text-4xl font-semibold truncate`}>
+      <div className={`text-2xl sm:text-3xl md:text-4xl font-semibold truncate ${pulseClass}`}>
         Almanac
       </div>
     </div>
